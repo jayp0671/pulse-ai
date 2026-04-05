@@ -1,0 +1,17 @@
+1. Source: BBC News
+Title: Example headline about a major world event
+Published: 2026-04-05T08:00:00Z
+Summary: Example summary text for an important article pulled from a feed.
+Link: https://example.com/article-1
+
+2. Source: NPR
+Title: Example headline about policy or markets
+Published: 2026-04-05T08:05:00Z
+Summary: Example summary text for a second article.
+Link: https://example.com/article-2
+
+3. Source: The Verge
+Title: Example headline about AI or technology
+Published: 2026-04-05T08:10:00Z
+Summary: Example summary text for a tech article.
+Link: https://example.com/article-3
