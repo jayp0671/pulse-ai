@@ -1,90 +1,106 @@
 # PulseAI
 
-PulseAI is an automated daily news briefing workflow built in **n8n**.
+PulseAI is an automated daily news briefing that now runs on **GitHub Actions** instead of a local n8n instance.
 
 It:
 - pulls top stories from **The New York Times, NPR, BBC News, and The Verge**
-- parses XML/Atom feeds into structured article objects
-- merges and formats the news into one compiled input
-- sends that input to **Google Gemini**
-- extracts a polished summary
+- parses RSS and Atom feeds into a shared article format
+- merges and deduplicates articles
+- sends the compiled feed stack to **Google Gemini**
+- generates a concise daily briefing
 - emails the final briefing automatically every morning
+- uploads run artifacts for debugging in GitHub Actions
 
-## Project structure
+## Final repository structure
 
 ```text
 pulse-ai/
-├─ README.md
-├─ .gitignore
-├─ workflow/
-│  ├─ PulseAI-public.json
-│  └─ PulseAI-private.template.json
+├─ .github/
+│  └─ workflows/
+│     └─ pulseai.yml
+├─ src/
+│  ├─ index.mjs
+│  ├─ config.mjs
+│  ├─ utils.mjs
+│  ├─ feeds.mjs
+│  ├─ compile.mjs
+│  ├─ gemini.mjs
+│  └─ email.mjs
 ├─ docs/
 │  ├─ architecture.md
+│  ├─ feed-sources.md
+│  ├─ migration-notes.md
 │  ├─ setup.md
-│  ├─ troubleshooting.md
-│  └─ feed-sources.md
+│  └─ troubleshooting.md
 ├─ examples/
 │  ├─ sample-briefing.txt
 │  └─ sample-input-articles.txt
+├─ workflow/
+│  ├─ PulseAI-public.json
+│  └─ PulseAI-private.template.json
+├─ artifacts/
+│  └─ .gitkeep
 ├─ screenshots/
 │  └─ .gitkeep
-└─ assets/
-   └─ .gitkeep
+├─ assets/
+│  └─ .gitkeep
+├─ .env.example
+├─ .gitignore
+├─ .nvmrc
+├─ LICENSE
+├─ package.json
+└─ README.md
 ```
 
-## Workflow pipeline
+## How it runs now
 
 ```text
-Schedule Trigger
-→ HTTP Request (NYT / NPR / BBC / The Verge)
-→ XML parsing
-→ Code nodes to normalize article fields
-→ Merge feeds
-→ Format compiled article block
-→ Build Gemini request
-→ Gemini HTTP Request
-→ Extract briefing
-→ Send Email
+GitHub Actions schedule / manual dispatch
+→ fetch RSS + Atom feeds
+→ parse XML
+→ normalize and deduplicate article objects
+→ compile prompt text
+→ call Gemini generateContent
+→ extract briefing
+→ send SMTP email
+→ upload artifacts
 ```
 
-## Files you should care about
+## What changed from the n8n version
 
-- `workflow/PulseAI-public.json`  
-  Public-safe n8n export with placeholder values for secrets.
+The original n8n workflow is still included in `workflow/` as a legacy reference, but the production path is now:
 
-- `workflow/PulseAI-private.template.json`  
-  Starter copy for your own local/private workflow configuration.
+- **runtime:** GitHub Actions
+- **logic:** Node.js modules in `src/`
+- **LLM call:** Gemini REST API
+- **delivery:** SMTP via Nodemailer
+- **debugging:** GitHub Actions artifacts
 
-- `docs/setup.md`  
-  Exact setup flow for n8n, Gemini, and SMTP.
+## Quick start
 
-- `docs/troubleshooting.md`  
-  Notes on the weird issues we hit while building.
+1. Add the repo files to GitHub.
+2. Add the required **Actions secrets** listed in `docs/setup.md`.
+3. Push `pulseai.yml` to your **default branch**.
+4. Run the workflow once from **Actions → PulseAI Daily Briefing → Run workflow**.
+5. Check the artifact bundle and your inbox.
 
-## Before you import the workflow
+## Local test
 
-Update these placeholders in your private copy:
-- `YOUR_GEMINI_API_KEY`
-- `your-email@example.com`
+```bash
+npm install
+cp .env.example .env
+# fill in your real values
+npm run run:local
+```
 
-Then reconnect your SMTP credential inside n8n.
+Set `DRY_RUN=true` in `.env` if you want to generate the briefing without sending email.
 
-## GitHub checklist
+## Notes
 
-Before pushing this repo publicly:
-1. Keep only the **public** workflow export in GitHub.
-2. Do **not** upload real API keys.
-3. Do **not** upload private SMTP credentials.
-4. Add screenshots of:
-   - the full n8n canvas
-   - successful Gemini output
-   - the final email in your inbox
+- This repo intentionally does **not** include `workflow/PulseAI-private.json`.
+- Do not commit `.env`.
+- If you uploaded a live Gemini API key anywhere before this cleanup, rotate it.
 
 ## Suggested repo description
 
-> Automated n8n workflow that turns major news RSS feeds into a daily AI-generated email briefing using Google Gemini.
-
-## License
-
-You can add an MIT license if you want to make the repo openly reusable.
+> Automated GitHub Actions workflow that turns major news RSS feeds into a daily AI-generated email briefing using Google Gemini.

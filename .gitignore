@@ -1,28 +1,11 @@
-# Operating system files
-.DS_Store
-Thumbs.db
-
-# Editor files
-.vscode/
-.idea/
-
-# Logs and temp files
-*.log
-*.tmp
-*.temp
-
-# Environment and secrets
+node_modules/
 .env
 .env.*
-*.pem
-*.key
-
-# Private workflow exports
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
+artifacts/out/
 workflow/PulseAI-private.json
-workflow/*private*.json
-
-# Screenshots generated locally
-screenshots/*.png
-screenshots/*.jpg
-screenshots/*.jpeg
-screenshots/*.webp

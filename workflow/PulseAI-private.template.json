@@ -1,0 +1,553 @@
+{
+  "name": "PulseAI",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        -80
+      ],
+      "id": "fd351a53-a579-45e1-853e-5015ce76ee8f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        304,
+        16
+      ],
+      "id": "bcbb3eac-341a-499b-8b4d-921d2c22c985",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -320
+      ],
+      "id": "ca030a01-b55c-4db9-b7fd-ab7aec4edb61",
+      "name": "XML1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -160
+      ],
+      "id": "034080e0-dac2-44fe-8fec-8cd65d97e373",
+      "name": "XML2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        304,
+        192
+      ],
+      "id": "373bb27d-6a2a-4c8b-b8a0-6c9ca25b1b78",
+      "name": "XML3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $json.rss.channel.item || [];\n\n// get feed title dynamically (like \"BBC News\", \"NPR\", etc.)\nconst sourceName = $json.rss.channel.title || \"Unknown Source\";\n\nreturn items.slice(0, 5).map(article => ({\n  json: {\n    source: sourceName,\n    title: article.title || \"\",\n    link: article.link || \"\",\n    description: article.description || \"\"\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        -320
+      ],
+      "id": "cccbdd0c-0e55-403e-978a-9ee4f94fca55",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $json.rss.channel.item || [];\n\n// get feed title dynamically (like \"BBC News\", \"NPR\", etc.)\nconst sourceName = $json.rss.channel.title || \"Unknown Source\";\n\nreturn items.slice(0, 5).map(article => ({\n  json: {\n    source: sourceName,\n    title: article.title || \"\",\n    link: article.link || \"\",\n    description: article.description || \"\"\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        -160
+      ],
+      "id": "cb1fba5f-91b5-4ad8-89df-0423d7a97da2",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $json.rss.channel.item || [];\n\n// get feed title dynamically (like \"BBC News\", \"NPR\", etc.)\nconst sourceName = $json.rss.channel.title || \"Unknown Source\";\n\nreturn items.slice(0, 5).map(article => ({\n  json: {\n    source: sourceName,\n    title: article.title || \"\",\n    link: article.link || \"\",\n    description: article.description || \"\"\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        16
+      ],
+      "id": "fa4c95ef-2499-4f09-8383-9a1ad17ee54f",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $json.feed?.entry || [];\nconst rawSource = $json.feed?.title;\n\nconst sourceName =\n  typeof rawSource === \"object\"\n    ? rawSource._ || \"The Verge\"\n    : rawSource || \"The Verge\";\n\nreturn items.slice(0, 5).map(article => ({\n  json: {\n    source: sourceName,\n    title: article.title?._ || article.title || \"\",\n    link: Array.isArray(article.link)\n      ? (article.link.find(l => l.rel === \"alternate\")?.href || article.link[0]?.href || \"\")\n      : (article.link?.href || article.link || \"\"),\n    description:\n      article.summary?._ ||\n      article.summary ||\n      article.content?._ ||\n      article.content ||\n      \"\",\n    published: article.published || article.updated || \"\"\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        192
+      ],
+      "id": "7c60486f-a346-405a-9cbc-3da3734065c3",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        112,
+        -320
+      ],
+      "id": "11f7855a-888d-4694-b338-ab71c088e7b3",
+      "name": "NY Times"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.npr.org/1001/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        112,
+        -160
+      ],
+      "id": "b2aa6a6e-4561-4140-9ae7-8a480eac25bc",
+      "name": "NPR"
+    },
+    {
+      "parameters": {
+        "url": "http://feeds.bbci.co.uk/news/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        112,
+        16
+      ],
+      "id": "971f282a-7939-43d3-9f30-7edf8bed6a76",
+      "name": "BBC"
+    },
+    {
+      "parameters": {
+        "url": "https://www.theverge.com/rss/index.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        112,
+        192
+      ],
+      "id": "1c94e9dd-06d3-4143-aca4-7df514db0fd0",
+      "name": "The Verge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        704,
+        -240
+      ],
+      "id": "ca38393e-bff7-42f1-aaa5-c6cc177c52fe",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        704,
+        112
+      ],
+      "id": "5e0a6ec6-944f-4303-92ff-861b630dc314",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        880,
+        -64
+      ],
+      "id": "2e1e0780-1d2d-4010-aa8a-efafa1c0b042",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const articles = $input.all();\n\nconst formattedText = articles.map((item, index) => {\n  const a = item.json;\n  return `${index + 1}. Source: ${a.source}\nTitle: ${a.title}\nPublished: ${a.published}\nSummary: ${a.description}\nLink: ${a.link}`;\n}).join('\\n\\n');\n\nreturn [\n  {\n    json: {\n      articleCount: articles.length,\n      compiledArticles: formattedText\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        -64
+      ],
+      "id": "e90326d8-b096-4846-b406-099e50474151",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const prompt = `You are PulseAI, a market intelligence analyst.\n\nYour job:\n1. Identify the 5 most important stories overall\n2. Summarize each in 2-3 sentences\n3. Flag stories related to AI, technology, business, or geopolitics\n4. For each story, include:\n- Headline\n- Source\n- Summary\n- Why it matters\n5. Keep the tone crisp, professional, and easy to skim in an email\n\nArticles:\n\n${$json.compiledArticles}`;\n\nreturn [\n  {\n    json: {\n      requestBody: JSON.stringify({\n        contents: [\n          {\n            parts: [\n              {\n                text: prompt\n              }\n            ]\n          }\n        ]\n      })\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        -64
+      ],
+      "id": "dffd8f62-14c6-4637-ab81-9f6cb6ade407",
+      "name": "Build Gemini Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "YOUR_GEMINI_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "=application/json",
+        "body": "={{ $json.requestBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1504,
+        -64
+      ],
+      "id": "93c66b33-5eda-4aa9-90bc-73777e917e4b",
+      "name": "Gemini HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const briefing = $json.candidates?.[0]?.content?.parts?.[0]?.text || \"\";\n\nreturn [\n  {\n    json: {\n      briefing\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        -64
+      ],
+      "id": "f16cf81c-4a88-49b5-9ba4-71dcd1034395",
+      "name": "Extract Briefing"
+    },
+    {
+      "parameters": {
+        "fromEmail": "PulseAI <your-email@example.com>",
+        "toEmail": "your-email@example.com",
+        "subject": "PulseAI Daily Briefing",
+        "emailFormat": "text",
+        "text": "={{$json.briefing}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1920,
+        -64
+      ],
+      "id": "54b272a1-93d0-4295-aaab-cd6b6be13f12",
+      "name": "Send an Email",
+      "webhookId": "ac318478-ec08-48fd-9c6f-89d36155ef66"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "NY Times",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "NPR",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BBC",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "The Verge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NY Times": {
+      "main": [
+        [
+          {
+            "node": "XML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NPR": {
+      "main": [
+        [
+          {
+            "node": "XML2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BBC": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "The Verge": {
+      "main": [
+        [
+          {
+            "node": "XML3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        [
+          {
+            "node": "Build Gemini Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Gemini Request": {
+      "main": [
+        [
+          {
+            "node": "Gemini HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Briefing": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "02626a1f-17f1-4bb1-aaeb-ae7489af9d6e",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "GfNUT1Pue4IVB0Wr",
+  "tags": []
+}

@@ -1,65 +1,98 @@
 # Setup Guide
 
-## 1. Install and open n8n
-Run n8n locally and open the editor in your browser.
+## 1. Put the repo on GitHub
 
-## 2. Import the workflow
-Import:
+Create a GitHub repository for PulseAI and upload the files in this package.
 
-`workflow/PulseAI-public.json`
+Make sure `.github/workflows/pulseai.yml` lands on your **default branch**.
 
-Then immediately save a private local copy before adding any credentials.
+## 2. Add GitHub Actions secrets
 
-## 3. Create your private workflow copy
-Duplicate the public workflow file and rename it:
+Open:
 
-`workflow/PulseAI-private.json`
+`Repo → Settings → Secrets and variables → Actions`
 
-Do not commit this file to GitHub.
+Create these **repository secrets**:
 
-## 4. Add your Gemini API key
-Inside the Gemini HTTP Request node:
-- keep the query parameter name as `key`
-- replace `YOUR_GEMINI_API_KEY` with your actual Gemini key
+- `GEMINI_API_KEY`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_SECURE`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `EMAIL_FROM`
+- `EMAIL_TO`
 
-## 5. Configure email sending
-Inside the Send Email node, create or attach an SMTP credential.
+### Recommended Gmail SMTP values
 
-### Example Gmail SMTP settings
-- Host: `smtp.gmail.com`
-- Port: `465` (SSL) or `587` (TLS)
-- Username: your Gmail address
-- Password: your Google app password
+- `SMTP_HOST = smtp.gmail.com`
+- `SMTP_PORT = 465`
+- `SMTP_SECURE = true`
+- `SMTP_USER = your Gmail address`
+- `SMTP_PASS = your Google app password`
+- `EMAIL_FROM = PulseAI <your-email@gmail.com>`
+- `EMAIL_TO = your target inbox`
 
-Then update:
-- `fromEmail`
-- `toEmail`
+## 3. Optional GitHub Actions variables
 
-## 6. Test the workflow manually
-Run the workflow once.
+In the same Actions settings area, you can optionally create **repository variables**:
 
-You should see:
-- ~20 merged articles
-- a formatted article block
-- a Gemini response
-- a final `briefing` field
-- one email delivered to your inbox
+- `GEMINI_MODEL`
+- `ARTICLE_LIMIT_PER_FEED`
+- `STORIES_TO_SUMMARIZE`
+- `EMAIL_SUBJECT_PREFIX`
+- `DRY_RUN`
+- `RECIPIENT_OVERRIDE`
 
-## 7. Publish the workflow
-After testing works end-to-end, publish the workflow so the schedule runs automatically.
+If you do not set them, the code falls back to defaults.
 
-## 8. Capture screenshots
-Take screenshots for:
-- the full workflow
-- the Gemini success node
-- the final email result
+Recommended defaults:
 
-Add them to the `screenshots/` folder.
+- `GEMINI_MODEL = gemini-2.5-flash-lite`
+- `ARTICLE_LIMIT_PER_FEED = 5`
+- `STORIES_TO_SUMMARIZE = 5`
+- `EMAIL_SUBJECT_PREFIX = PulseAI Daily Briefing`
+- `DRY_RUN = false`
 
-## 9. Push the public-safe repo
-Make sure only the public JSON export is committed.
+## 4. Commit and push
 
-Never push:
-- real API keys
-- private workflow files
-- SMTP credentials
+Push the repo to GitHub.
+
+Once the workflow file is on the default branch, GitHub Actions can run it.
+
+## 5. Run a manual test first
+
+Open:
+
+`Repo → Actions → PulseAI Daily Briefing → Run workflow`
+
+Then confirm:
+- the run completes successfully
+- the artifact bundle exists
+- `briefing.txt` looks good
+- the email arrives in your inbox
+
+## 6. Let the schedule take over
+
+The workflow is configured for **8:07 AM America/Chicago** every day.
+
+## 7. Local test path
+
+For local testing:
+
+```bash
+npm install
+cp .env.example .env
+# fill in real values
+npm run run:local
+```
+
+Set `DRY_RUN=true` in `.env` to skip email delivery while testing.
+
+## 8. Final safety check
+
+Never commit:
+- `.env`
+- live API keys
+- SMTP passwords
+- `workflow/PulseAI-private.json`
